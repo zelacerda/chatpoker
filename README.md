@@ -1,17 +1,19 @@
 # chatpoker
 A terminal-based video poker game written in Python.
 
-This game implements the ["Jacks or Better"](https://en.wikipedia.org/wiki/Video_poker#Jacks_or_Better) video poker version and runs entirely on terminal, with some nice colors and simple graphics.
+## About chatpoker
+
+The game implements the ["Jacks or Better"](https://en.wikipedia.org/wiki/Video_poker#Jacks_or_Better) video poker version and runs entirely on terminal, with some nice colors and simple graphics.
 
 ![Game Screen](./assets/screen.png)
 
-## Requisites
+## Requirements
 
-**chatpoker** was only tested on my machine (Linux with Manjaro distro) with Python 3.10.9 version, but probably will work on previous versions.
+**chatpoker** was only tested on my machine (Linux Manjaro distro) using Python 3.10.9, but probably will work on another versions and operating systems.
 
 A terminal compatible with ANSI escape code and UFT-8 font is necessary to render colors and suit symbols used in the cards (♣ ♥ ♠ ♦).
 
-Since the game not uses third party libraries, you don't need any virtual environment neither `requirements.txt` file. Just clone this repo, run the `poker.py` file on terminal and have fun :)
+Since the game not uses third party libraries, you don't need any Python virtual environment neither a `requirements.txt` file. Just clone this repo, run the `poker.py` file on terminal and have fun :)
 
 ```
 git clone https://github.com/zelacerda/chatpoker.git
