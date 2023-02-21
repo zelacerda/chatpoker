@@ -1,128 +1,113 @@
-PURPLE = '\033[95m'
-BLUE = '\033[94m'
-CYAN = '\033[96m'
-GREEN = '\033[92m'
-YELLOW = '\033[93m'
-RED = '\033[91m'
-ENDC = '\033[0m'
-BOLD = '\033[1m'
-BLACK = '\033[30m'
-UNDERLINE = '\033[4m'
-FOREWHITE = '\033[107m'
+# ANSI color codes constants
+P = "\033[95m"  # Purple
+G = "\033[92m"  # Green
+Y = "\033[93m"  # Yellow
+R = "\033[91m"  # Red
+K = "\033[30m"  # Black
+W = "\033[107m" # White (foreground)
+B = "\033[1m"   # Bold
+D = "\033[0m"   # Restore to default
+BP = B + P
+BG = B + G
+BY = B + Y
+BR = B + R
 
-suit_map = {0: "♣",
-            1: "♥",
-            2: "♠",
-            3: "♦"}
+SUITS = ["♣", "♥", "♠", "♦"]
+VALS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
-val_map = {0: "2", 1: "3", 2: "4", 3: "5", 4: "6",
-           5: "7", 6: "8", 7: "9", 8: "10", 9: "J",
-           10: "Q", 11: "K", 12: "A"}
-
-PROMPT = f"    {BOLD}{PURPLE}> {ENDC}"
+PROMPT = f" {BP}>{D} "
 
 def render_card(v, s):
-    t = BOLD
-    if s in (1, 3):
-        t += FOREWHITE
-        t += RED
-    else:
-        t += FOREWHITE
-        t += BLACK
-    t += f" {val_map[v]:2}{suit_map[s]}"
-    t += " "
-    t += ENDC
-
-    return t
+    """Renders the card central line with number and suit"""
+    l = B + W
+    if s in (1, 3): # Red suit
+        l += R
+    else:           # Black suit
+        l += K
+    l += f" {VALS[v]:2}{SUITS[s]} {D}"
+    return l
 
 def render_hand(hand):
-    pos = f"{YELLOW}  1     2     3     4     5{ENDC}"
-    borders = 5 * f"{FOREWHITE}     {ENDC} "
-    return f"""
-    {pos}
-    {borders}
-    {" ".join([render_card(v, s) for v, s in hand])}
-    {borders}
-    """
+    """Renders the hand of cards"""
+    white_line = 5 * f" {W}     {D} " # White top and bottom cards lines
+    card_line = "  ".join([render_card(v, s) for v, s in hand])
+    t = (f"\n {Y}   1      2      3      4      5{D}\n"
+         f" {white_line}\n"
+         f"  {card_line}\n"
+         f" {white_line}\n")
+    return t
 
 def welcome():
-    return f"""
-    Hi! Welcome to {BOLD}{YELLOW}Chat Video Poker!{ENDC}
-    Press {BOLD}{PURPLE}t{ENDC} whenever you want to see the paytable.
-    Or {BOLD}{PURPLE}q{ENDC} to quit and exit the game at any time.
-    Press {BOLD}{PURPLE}Enter{ENDC} to start the game. Good luck!
-    """
+    t = (f"\n Hi! Welcome to {BY}chatpoker{D}!\n"
+         f" Press {BP}t{D} whenever you want to see the pay table.\n"
+         f" Or {BP}q{D} to quit and exit the game at any time.\n"
+         f" Press {BP}Enter{D} to start the game. Good luck!\n")
+    return t
 
 def bet(chips):
-    return f"""
-    You have {BOLD}{GREEN}{chips} chips{ENDC} to play.
-    How many chips do you want to bet this round?
-    """
+    t = (f"\n You have {BG}{chips} chips{D} to play.\n"
+         f" How many chips do you want to bet this round?\n")
+    return t
 
 def bet_limit(chips):
-    return f"""
-    {RED}Hey! you cannot bet more than {chips} chips.{ENDC}"""
+    t = f"\n {R}Hey! you cannot bet more than {BR}{chips} chips{D}{R}.{D}"
+    return t
 
 def bet_error():
-    return f"""
-    {RED}Sorry, but you need to enter a valid number.{ENDC}"""
+    t = f"\n {R}Sorry, but you need to enter a valid number.{D}"
+    return t
 
 def your_hand(hand):
-    rendered_hand = render_hand(hand)
-    return f"""
-    Your starting hand is:
-    {rendered_hand}"""
+    t = (f"\n Your {BY}starting hand{D} is:\n"
+         f" {render_hand(hand)}")
+    return t
 
 def change():
-    return f"""
-    Which cards do you want {BOLD}{YELLOW}to hold{ENDC}? Select its positions without spaces.
-    E.g., to hold the cards from positions {YELLOW}1, 3 and 5{ENDC}, press {BOLD}{PURPLE}135 + Enter{ENDC}.
-    If you want to change all the cards, just press {BOLD}{PURPLE}Enter{ENDC}.
-    """
+    t = (f" Which cards do you want {BY}to hold{D}?"
+         f" Type its positions without spaces.\n"
+         f" E.g. To hold cards at {Y}2{D}, {Y}3{D} and {Y}5{D}"
+         f" positions, type {BP}235 + Enter{D}.\n"
+         f" If you want to change all your cards, just press {BP}Enter{D}.\n")
+    return t
 
 def change_error():
-    return f"""
-    {RED}My bad... You must choose only valid card positions.{ENDC}"""
+    t = f"\n {R}Nope... You must choose valid card positions.{D}"
+    return t
 
 def result(hand, pattern, prize):
-    rendered_hand = render_hand(hand)
     if prize == 0:
-        prize_msg = "You didn't make any poker hands and lost your bet :("
+        msg = f"You didn't make a poker hand. Sorry, {BG}no bucks{D} for you."
     else:
-        prize_msg = f"You made a {BOLD}{YELLOW}{pattern}{ENDC} and won {BOLD}{GREEN}{prize} chips{ENDC}!"
-    return f"""
-    All right. This is your final hand:
-    {rendered_hand}
-
-    {prize_msg}"""
+        msg = f"You made a {BY}{pattern}{D} and won {BG}{prize} chips{D}!"
+    t = (f"\n All right. This is your {BY}final hand{D}:\n"
+         f" {render_hand(hand)}\n"
+         f" {msg}")
+    return t
 
 def new_hand():
-    return f"""
-    Press {BOLD}{PURPLE}Enter{ENDC} to start a new round.
-    """
+    t = f"\n Press {BP}Enter{D} to start a new round.\n"
+    return t
 
 def end():
-    return f"""
-    What a pity! You lost all your rich buck :(
-    Want to play again? Just press {BOLD}{PURPLE}Enter{ENDC} and I'll lend you some money.
-    """
+    t = (f"\n What a pity! You lost all your bucks :(\n"
+         f" Want to play again? Just press {BP}Enter{D}"
+         f" and I'll lend you some money.\n")
+    return t
 
 def quit(chips):
-    return f"""
-    You left the game with {BOLD}{GREEN}{chips} chips{ENDC}.
-    See you later!
-    """
+    t = (f"\n You left the game with {BG}{chips} chips{D}.\n"
+         f" See you later!\n")
+    return t
 
 def table():
-    return f"""
-    This is the paytable for each chip bet:
-
-    Royal Flush:        {BOLD}{YELLOW}800{ENDC}
-    Straight Flush:      {BOLD}{YELLOW}50{ENDC}
-    Four of a kind:      {BOLD}{YELLOW}25{ENDC}
-    Full House:           {BOLD}{YELLOW}9{ENDC}
-    Flush:                {BOLD}{YELLOW}6{ENDC}
-    Straight:             {BOLD}{YELLOW}4{ENDC}
-    Three of a kind:      {BOLD}{YELLOW}3{ENDC}
-    Two Pair:             {BOLD}{YELLOW}2{ENDC}
-    Jacks or Better:      {BOLD}{YELLOW}1{ENDC}"""
+    t = (f"\n This is the {BY}pay table{D} for each chip bet:\n\n"
+         f"  Royal Flush:        {BG}800{D}\n"
+         f"  Straight Flush:      {BG}50{D}\n"
+         f"  Four of a kind:      {BG}25{D}\n"
+         f"  Full House:           {BG}9{D}\n"
+         f"  Flush:                {BG}6{D}\n"
+         f"  Straight:             {BG}4{D}\n"
+         f"  Three of a kind:      {BG}3{D}\n"
+         f"  Two Pair:             {BG}2{D}\n"
+         f"  Jacks or Better:      {BG}1{D}")
+    return t
