@@ -28,7 +28,7 @@ class Deck:
 
     def pick(self, n):
         result = []
-        for c in range(n):
+        for _ in range(n):
             result.append(self.stack.pop())
         return result
 
@@ -61,7 +61,7 @@ class Game:
 
     def eval_prompt(self):
         i = input(msg.PROMPT)
-        if i == "t": # Show prize table
+        if i == "t": # Show pay table
             print(msg.table())
             return False
         elif i == "q": # Quit game
@@ -76,8 +76,8 @@ class Game:
                 print(msg.bet_error())
                 return False
         elif self.state == "change":
-            f = [e for e in i if e in "12345"] # Valid chars
-            if f == list(i) and len(i) == len(set(i)): # Only unique chars
+            f = [e for e in i if e in "12345"]         # Valid positions
+            if f == list(i) and len(i) == len(set(i)): # Only unique pos
                 return i
             else:
                 print(msg.change_error())
@@ -93,15 +93,17 @@ class Game:
     def do_bet(self):
         print(msg.bet(self.chips))
         v = self.eval_prompt()
-        if v:
-            if v > 0 and v <= self.chips:
+        if type(v) is int:
+            if v <= 0:
+                print(msg.bet_error())
+            elif v > self.chips:
+                print(msg.bet_limit(self.chips))
+            else:
                 self.bet = v
                 self.chips -= self.bet
                 self.deck = Deck()
                 self.hand = Hand(self.deck)
                 self.state = "change"
-            else:
-                print(msg.bet_limit(self.chips))
 
     def change(self):
         print(msg.your_hand(self.hand.hand))
