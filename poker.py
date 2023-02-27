@@ -145,4 +145,7 @@ class Game:
                 self.result()
 
 if __name__ == "__main__":
+    import os
+    if os.name == "nt": # Windows needs color setup
+        os.system("color")
     Game()

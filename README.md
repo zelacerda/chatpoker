@@ -32,9 +32,9 @@ python poker.py
 There's also a [Docker version on Docker Hub](https://hub.docker.com/r/zelacerda/chatpoker/tags) that you can use without install any file or dependency. Presuming Docker is installed on your system, use the command below to pull the image and run the containerized version:
 
 ```
-docker run --rm -it zelacerda/chatpoker
+docker run --rm -i zelacerda/chatpoker
 ```
 
 Feel free to use, modify and distribute!
 
-**version 1.0.1 - 2023 - by zelacerda**
+**version 1.0.2 - 2023 - by zelacerda**

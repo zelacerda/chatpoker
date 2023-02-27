@@ -50,7 +50,7 @@ def bet(chips):
     return t
 
 def bet_limit(chips):
-    t = f"\n {R}Hey! you cannot bet more than {BR}{chips} chips{D}{R}.{D}"
+    t = f"\n {R}Hey! You cannot bet more than {BR}{chips} chips{D}{R}.{D}"
     return t
 
 def bet_error():
